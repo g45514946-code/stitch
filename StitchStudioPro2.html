@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
+<title>🌸 Stitch Studio Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --rose:#c4686d;--rose-l:#e8b4b8;--rose-p:#fdf0f0;--rose-d:#7a3638;
+  --mauve:#9d7a9a;--sage:#5a8a5e;--cream:#fdf8f5;--warm:#f5ece8;
+  --text:#2e1f22;--muted:#8a6068;--border:#e2cdd0;--white:#fff;
+  --sh:rgba(150,80,90,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);display:flex;flex-direction:column;}
+
+/* HEADER */
+#hdr{background:linear-gradient(115deg,#b55a60 0%,#9d7a9a 60%,#7a8faa 100%);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:relative;z-index:10;box-shadow:0 3px 20px rgba(120,50,60,0.25);}
+#hdr h1{font-family:'Cormorant Garamond',serif;color:#fff;font-size:1.25rem;font-weight:600;}
+#hdr .sub{font-size:0.65rem;color:rgba(255,255,255,0.75);margin-top:1px;}
+.hbtn{padding:6px 13px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);color:#fff;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.hbtn:hover{background:rgba(255,255,255,0.3);}
+
+/* NAV */
+#nav{display:flex;background:#fff;border-bottom:2px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none;z-index:9;}
+#nav::-webkit-scrollbar{display:none;}
+.ntab{flex:0 0 auto;padding:10px 16px;font-size:0.78rem;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.ntab.active{color:var(--rose);border-bottom-color:var(--rose);background:var(--rose-p);}
+
+/* PANELS */
+#main{flex:1;overflow:hidden;position:relative;}
+.panel{display:none;height:100%;overflow-y:auto;padding:12px;flex-direction:column;gap:10px;}
+.panel.active{display:flex;}
+
+/* CARDS */
+.card{background:#fff;border-radius:14px;padding:14px;border:1px solid var(--border);box-shadow:0 2px 10px var(--sh);flex-shrink:0;}
+.ctitle{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--rose-d);margin-bottom:10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:20px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.btn-p{background:linear-gradient(135deg,var(--rose),var(--mauve));color:#fff;box-shadow:0 2px 10px var(--sh);}
+.btn-p:hover{transform:translateY(-1px);}
+.btn-s{background:var(--warm);color:var(--rose-d);border:1px solid var(--border);}
+.btn-s:hover{background:var(--rose-p);}
+.btn-d{background:#fde8ea;color:#a02030;border:1px solid #f5c0c5;}
+.btn-sm{padding:5px 10px;font-size:0.72rem;}
+.btn-icon{width:32px;height:32px;padding:0;border-radius:10px;justify-content:center;}
+
+/* FORMS */
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.fg{display:flex;flex-direction:column;gap:3px;flex:1;min-width:60px;}
+label{font-size:0.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+input,select,textarea{border:1.5px solid var(--border);border-radius:9px;padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:var(--text);background:#fff;outline:none;transition:border .2s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--rose-l);}
+input[type=color]{height:34px;padding:3px 5px;cursor:pointer;}
+input[type=range]{padding:5px 0;accent-color:var(--rose);}
+input[type=file]{display:none;}
+textarea{resize:vertical;min-height:52px;}
+
+/* PATTERN GRID */
+.pat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+.pat-card{background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:10px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;}
+.pat-card:hover{border-color:var(--rose-l);box-shadow:0 4px 16px var(--sh);transform:translateY(-2px);}
+.pat-card.active-track{border-color:var(--rose);background:var(--rose-p);}
+.pat-thumb{width:100%;height:85px;background:var(--warm);border-radius:9px;margin-bottom:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.pat-thumb img{width:100%;height:100%;object-fit:cover;}
+.pat-thumb canvas{max-width:100%;max-height:100%;image-rendering:pixelated;}
+.pat-name{font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:600;color:var(--rose-d);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pat-meta{font-size:0.67rem;color:var(--muted);margin-top:2px;}
+.pat-badge{position:absolute;top:7px;right:7px;background:var(--rose);color:#fff;border-radius:7px;font-size:0.58rem;font-weight:700;padding:2px 6px;}
+
+/* TRACKER - the main view */
+#tracker-panel{display:none;height:100%;flex-direction:column;}
+#tracker-panel.active{display:flex;}
+
+/* TOP BAR in tracker */
+#tr-topbar{background:#fff;border-bottom:1px solid var(--border);padding:8px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;}
+#tr-pat-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:var(--rose-d);}
+
+/* STATS BAR */
+#tr-statsbar{background:var(--warm);border-bottom:1px solid var(--border);padding:7px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;}
+.stat-chip{background:#fff;border-radius:10px;padding:4px 10px;border:1px solid var(--border);text-align:center;min-width:64px;}
+.stat-n{font-size:1rem;font-weight:700;color:var(--rose);}
+.stat-l{font-size:0.6rem;color:var(--muted);}
+.prog-mini{flex:1;min-width:80px;}
+.prog-track{background:var(--border);border-radius:10px;height:14px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--mauve));border-radius:10px;transition:width .5s ease;}
+
+/* PAGE NAV BAR */
+#tr-pagebar{background:#fff;border-bottom:1px solid var(--border);padding:6px 12px;display:flex;align-items:center;gap:6px;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+#tr-pagebar::-webkit-scrollbar{display:none;}
+.pg-btn{flex:0 0 auto;width:34px;height:28px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:0.75rem;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.pg-btn.active{background:var(--rose);color:#fff;border-color:var(--rose);}
+.pg-btn:hover:not(.active){background:var(--rose-p);color:var(--rose);}
+.pg-thumb-btn{width:48px;height:36px;border-radius:8px;border:2px solid var(--border);overflow:hidden;cursor:pointer;flex:0 0 auto;transition:all .15s;}
+.pg-thumb-btn.active{border-color:var(--rose);}
+.pg-thumb-btn img{width:100%;height:100%;object-fit:cover;}
+
+/* ZOOM BAR */
+#tr-zoombar{background:rgba(255,255,255,0.95);border-bottom:1px solid var(--border);padding:6px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;}
+.zbtn{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;font-weight:700;transition:background .15s;}
+.zbtn:hover{background:var(--rose-p);}
+.zlbl{font-size:0.75rem;font-weight:700;color:var(--rose-d);min-width:44px;text-align:center;}
+
+/* MAIN CANVAS AREA */
+#tr-canvas-outer{flex:1;overflow:hidden;position:relative;background:repeating-conic-gradient(#ede4e6 0% 25%,#fdf8f5 0% 50%) 0 0/16px 16px;}
+#tr-canvas-scroll{width:100%;height:100%;overflow:auto;position:relative;}
+#tr-canvas-inner{position:relative;display:inline-block;line-height:0;}
+#tr-pattern-img{display:block;image-rendering:high-quality;user-select:none;}
+#tr-pattern-canvas{display:none;image-rendering:pixelated;user-select:none;}
+/* The SVG stitch overlay */
+#stitch-overlay{position:absolute;top:0;left:0;pointer-events:none;}
+/* The clickable cell grid overlay */
+#cell-overlay{position:absolute;top:0;left:0;cursor:crosshair;}
+
+/* SYMBOL PANEL */
+#symbol-panel{position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);border-top:2px solid var(--border);padding:10px 12px;max-height:220px;overflow-y:auto;z-index:20;transform:translateY(100%);transition:transform .3s ease;backdrop-filter:blur(6px);}
+#symbol-panel.open{transform:translateY(0);}
+.sym-legend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;}
+.sym-leg-item{display:flex;align-items:center;gap:7px;padding:6px 8px;background:var(--warm);border-radius:8px;border:1px solid var(--border);cursor:pointer;transition:all .15s;}
+.sym-leg-item:hover{background:var(--rose-p);}
+.sym-leg-item.active-col{border-color:var(--rose);background:var(--rose-p);}
+.sym-box{width:26px;height:26px;border-radius:6px;border:1.5px solid rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+.sym-info{flex:1;min-width:0;}
+.sym-name{font-size:0.7rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sym-code{font-size:0.62rem;color:var(--muted);}
+
+/* SECTION PANEL */
+#section-panel{position:absolute;top:0;right:0;bottom:0;width:240px;background:rgba(255,255,255,0.97);border-left:2px solid var(--border);padding:12px;overflow-y:auto;z-mode:20;transform:translateX(100%);transition:transform .3s ease;backdrop-filter:blur(6px);}
+#section-panel.open{transform:translateX(0);}
+.sec-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--warm);border-radius:10px;margin-bottom:6px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;}
+.sec-item.done{background:#e8f5e9;border-color:#81c784;}
+.sec-item:hover{background:var(--rose-p);}
+.sec-chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--rose-l);background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+.sec-item.done .sec-chk{background:var(--sage);border-color:var(--sage);color:#fff;}
+
+/* NOTES PANEL */
+#notes-panel{position:absolute;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);border-top:2px solid var(--border);padding:12px;max-height:50%;overflow-y:auto;z-index:20;transform:translateY(100%);transition:transform .3s;backdrop-filter:blur(6px);}
+#notes-panel.open{transform:translateY(0);}
+.note-card{background:var(--warm);border-radius:9px;padding:9px;margin-bottom:7px;border-left:4px solid var(--rose-l);}
+.note-date{font-size:0.63rem;color:var(--muted);}
+
+/* DMC TABLE */
+.dmc-wrap{overflow:auto;flex:1;border-radius:10px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:0.77rem;}
+th{background:var(--warm);padding:7px 9px;text-align:left;font-size:0.66rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--border);}
+td{padding:6px 9px;border-bottom:1px solid #f0e8ea;}
+tr:hover td{background:var(--rose-p);}
+.dsw{width:20px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,.1);display:inline-block;vertical-align:middle;}
+.addb{padding:3px 9px;border-radius:8px;border:1px solid var(--rose-l);background:var(--rose-p);color:var(--rose-d);cursor:pointer;font-size:0.68rem;font-weight:600;}
+.addb:hover{background:var(--rose-l);color:#fff;}
+
+/* MODAL */
+.moval{position:fixed;inset:0;background:rgba(46,31,34,.6);backdrop-filter:blur(4px);z-index:100;display:none;align-items:flex-end;justify-content:center;}
+.moval.open{display:flex;}
+.mo{background:#fff;border-radius:22px 22px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 -10px 50px rgba(100,50,60,0.3);}
+.mo h2{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--rose-d);margin-bottom:12px;}
+.mo-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;padding-top:10px;border-top:1px solid var(--border);}
+.drag-h{width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 14px;}
+
+/* UPLOAD */
+.uparea{border:2.5px dashed var(--rose-l);border-radius:13px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--rose-p);}
+.uparea:hover,.uparea.drag{border-color:var(--rose);background:#fde8ea;}
+.upicon{font-size:2.2rem;display:block;margin-bottom:7px;}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-icon{font-size:3rem;margin-bottom:10px;display:block;}
+
+/* DIVIDER */
+.div{border:none;border-top:1.5px dashed var(--border);margin:10px 0;}
+
+/* BADGE */
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:0.63rem;font-weight:700;}
+.badge-r{background:var(--rose-p);color:var(--rose-d);border:1px solid var(--rose-l);}
+.badge-g{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;}
+
+/* PROGRESS BAR */
+.prog-bar-wrap{background:var(--warm);border-radius:20px;height:18px;overflow:hidden;position:relative;border:1px solid var(--border);}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--mauve));border-radius:20px;transition:width .5s ease;}
+.prog-bar-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3);}
+
+/* STAT GRID */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
+.stat-box{background:var(--warm);border-radius:10px;padding:8px 6px;text-align:center;border:1px solid var(--border);}
+.stat-num{font-size:1.2rem;font-weight:700;color:var(--rose);}
+.stat-lb{font-size:0.6rem;color:var(--muted);}
+
+/* THREAD PROG ROW */
+.thr-row{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border);}
+.thr-sw{width:18px;height:18px;border-radius:4px;border:1px solid rgba(0,0,0,.1);flex-shrink:0;}
+.thr-prog{flex:1;background:var(--warm);border-radius:10px;height:9px;overflow:hidden;}
+.thr-fill{height:100%;border-radius:10px;transition:width .4s;}
+
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:var(--rose-l);border-radius:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fu{animation:fadeUp .22s ease;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="hdr">
+  <span style="font-size:1.6rem;flex-shrink:0;">🧵</span>
+  <div>
+    <h1>Stitch Studio Pro</h1>
+    <div class="sub">Pattern Keeper · PDF Import · Square Tracker</div>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:7px;">
+    <button class="hbtn" onclick="openAddModal()">➕ New Pattern</button>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div id="nav">
+  <button class="ntab active" onclick="goTab('patterns')">📁 Patterns</button>
+  <button class="ntab" onclick="goTab('tracker')">📊 Tracker</button>
+  <button class="ntab" onclick="goTab('dmc')">🎨 DMC Colors</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- ══ PATTERNS ══ -->
+<div id="tab-patterns" class="panel active">
+  <div class="card fu">
+    <div class="row" style="margin-bottom:10px;">
+      <div class="ctitle" style="margin:0;">📁 My Patterns</div>
+      <button class="btn btn-p btn-sm" onclick="openAddModal()" style="margin-left:auto;">➕ Add Pattern</button>
+    </div>
+    <div id="pat-list" class="pat-grid"></div>
+  </div>
+</div>
+
+<!-- ══ TRACKER ══ -->
+<div id="tab-tracker" class="panel" style="padding:0;gap:0;">
+
+  <!-- TOP BAR -->
+  <div id="tr-topbar">
+    <div>
+      <div id="tr-pat-title">— No Pattern Loaded —</div>
+      <div id="tr-pat-sub" style="font-size:0.65rem;color:var(--muted);"></div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="btn btn-s btn-sm" onclick="toggleSymPanel()">🔣 Symbols</button>
+      <button class="btn btn-s btn-sm" onclick="toggleSecPanel()">🗂 Sections</button>
+      <button class="btn btn-s btn-sm" onclick="toggleNotesPanel()">📝 Notes</button>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div id="tr-statsbar">
+    <div class="stat-chip"><div class="stat-n" id="tr-done">0</div><div class="stat-l">Stitched</div></div>
+    <div class="stat-chip"><div class="stat-n" id="tr-left">—</div><div class="stat-l">Left</div></div>
+    <div class="stat-chip"><div class="stat-n" id="tr-pct">0%</div><div class="stat-l">Done</div></div>
+    <div class="prog-mini">
+      <div style="font-size:0.65rem;color:var(--muted);margin-bottom:3px;" id="tr-prog-lbl">Overall Progress</div>
+      <div class="prog-track"><div class="prog-fill" id="tr-prog" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- PAGE THUMBNAIL BAR -->
+  <div id="tr-pagebar" style="display:none;">
+    <span style="font-size:0.7rem;font-weight:700;color:var(--muted);flex-shrink:0;">Pages:</span>
+    <div id="pg-thumbs" style="display:flex;gap:5px;align-items:center;"></div>
+    <button class="btn btn-s btn-sm" onclick="addPageToPattern()" style="flex-shrink:0;margin-left:4px;">+ Page</button>
+  </div>
+
+  <!-- ZOOM BAR -->
+  <div id="tr-zoombar">
+    <button class="zbtn" onclick="changeZoom(-0.25)">−</button>
+    <div class="zlbl" id="zlbl">100%</div>
+    <button class="zbtn" onclick="changeZoom(0.25)">+</button>
+    <button class="zbtn" onclick="changeZoom(-zoom+1)" title="Reset zoom" style="font-size:0.7rem;">↺</button>
+    <div style="width:1px;height:20px;background:var(--border);margin:0 4px;"></div>
+    <label style="text-transform:none;font-size:0.72rem;color:var(--muted);letter-spacing:0;">Grid:</label>
+    <input type="number" id="grid-cols" value="50" min="5" max="300" style="width:60px;padding:4px 6px;" title="Columns" onchange="applyGrid()"/>
+    <span style="font-size:0.72rem;color:var(--muted);">×</span>
+    <input type="number" id="grid-rows" value="50" min="5" max="300" style="width:60px;padding:4px 6px;" title="Rows" onchange="applyGrid()"/>
+    <button class="btn btn-p btn-sm" onclick="applyGrid()">Apply</button>
+    <div style="margin-left:auto;display:flex;gap:5px;align-items:center;">
+      <label style="text-transform:none;letter-spacing:0;font-size:0.7rem;color:var(--muted);">Color:</label>
+      <select id="active-color-sel" style="padding:4px 6px;width:130px;font-size:0.72rem;" onchange="selectActiveColor()">
+        <option value="">All (toggle any)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- CANVAS OUTER -->
+  <div id="tr-canvas-outer">
+    <div id="tr-canvas-scroll">
+      <div id="tr-canvas-inner">
+        <img id="tr-pattern-img" src="" alt="" draggable="false"/>
+        <canvas id="tr-pattern-canvas" draggable="false"></canvas>
+        <!-- SVG overlay for stitches -->
+        <svg id="stitch-overlay" xmlns="http://www.w3.org/2000/svg"></svg>
+        <!-- Invisible click grid -->
+        <canvas id="cell-overlay"></canvas>
+      </div>
+    </div>
+
+    <!-- Floating panels -->
+    <div id="symbol-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:600;color:var(--rose-d);">🔣 Thread Legend</div>
+        <button class="btn btn-s btn-sm" onclick="toggleSymPanel()">✕</button>
+      </div>
+      <div class="sym-legend-grid" id="sym-legend-content"></div>
+    </div>
+
+    <div id="section-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:600;color:var(--rose-d);">🗂 Sections</div>
+        <button class="btn btn-s btn-sm" onclick="toggleSecPanel()">✕</button>
+      </div>
+      <button class="btn btn-p btn-sm" onclick="addSection()" style="width:100%;justify-content:center;margin-bottom:8px;">➕ Add Section</button>
+      <div id="sec-list"></div>
+    </div>
+
+    <div id="notes-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:600;color:var(--rose-d);">📝 Session Notes</div>
+        <button class="btn btn-s btn-sm" onclick="toggleNotesPanel()">✕</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <textarea id="note-in" placeholder="Add a session note…" style="flex:1;min-height:44px;"></textarea>
+        <button class="btn btn-p" onclick="addNote()" style="align-self:flex-end;">➕</button>
+      </div>
+      <div id="notes-out"></div>
+    </div>
+  </div>
+
+</div><!-- /tracker -->
+
+<!-- ══ DMC ══ -->
+<div id="tab-dmc" class="panel">
+  <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0;">
+    <div class="ctitle">🎨 DMC Thread Library <span style="font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:400;color:var(--muted);margin-left:4px;" id="dmc-count"></span></div>
+    <div class="row" style="margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+      <div class="fg" style="min-width:150px;"><input type="search" id="dmc-q" placeholder="Search name, number…" oninput="filterDMC()"/></div>
+      <div class="fg" style="max-width:130px;">
+        <select id="dmc-fam" onchange="filterDMC()">
+          <option value="">All Families</option>
+          <option>White/Cream</option><option>Red</option><option>Pink</option>
+          <option>Orange</option><option>Yellow</option><option>Green</option>
+          <option>Blue</option><option>Purple</option><option>Brown</option>
+          <option>Grey</option><option>Black</option>
+        </select>
+      </div>
+    </div>
+    <div class="dmc-wrap">
+      <table><thead><tr><th>Color</th><th>DMC #</th><th>Name</th><th>Symbol</th><th>Family</th><th></th></tr></thead>
+      <tbody id="dmc-tbody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ══ MODAL: Add Pattern ══ -->
+<div class="moval" id="add-modal">
+<div class="mo">
+  <div class="drag-h"></div>
+  <h2>➕ Add Pattern</h2>
+  <div style="display:flex;flex-direction:column;gap:11px;">
+    <div class="fg"><label>Pattern Name</label><input type="text" id="ap-name" placeholder="e.g. Garden Roses"/></div>
+    <div>
+      <label style="display:block;margin-bottom:6px;">Import PDF or Image</label>
+      <div class="uparea" id="uparea" onclick="document.getElementById('file-in').click()" ondragover="dragOv(event)" ondrop="dropF(event)">
+        <span class="upicon">📂</span>
+        <div style="font-size:0.82rem;color:var(--muted);">Tap to open PDF or image<br><span style="font-size:0.7rem;">PDF: all pages imported · JPG/PNG also supported</span></div>
+      </div>
+      <input type="file" id="file-in" accept="image/*,.pdf" multiple onchange="handleFileInput(event)"/>
+      <div id="up-status" style="font-size:0.73rem;color:var(--sage);margin-top:5px;min-height:16px;"></div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>Grid Columns</label><input type="number" id="ap-cols" value="50" min="5" max="500"/></div>
+      <div class="fg"><label>Grid Rows</label><input type="number" id="ap-rows" value="50" min="5" max="500"/></div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>Sections (rows)</label><input type="number" id="ap-sr" value="3" min="1" max="30"/></div>
+      <div class="fg"><label>Sections (cols)</label><input type="number" id="ap-sc" value="3" min="1" max="30"/></div>
+    </div>
+  </div>
+  <div class="mo-foot">
+    <button class="btn btn-s btn-sm" onclick="closeAddModal()">Cancel</button>
+    <button class="btn btn-p btn-sm" id="create-btn" onclick="createPattern()">✨ Create Pattern</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ MODAL: Pattern Options ══ -->
+<div class="moval" id="pat-modal">
+<div class="mo">
+  <div class="drag-h"></div>
+  <h2 id="pm-name">Pattern</h2>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <button class="btn btn-p" onclick="startTracking()">📊 Track Progress</button>
+    <button class="btn btn-s" onclick="exportPat()">📤 Export JSON</button>
+    <hr class="div"/>
+    <button class="btn btn-d btn-sm" onclick="deletePat()">🗑 Delete Pattern</button>
+  </div>
+  <div class="mo-foot"><button class="btn btn-s btn-sm" onclick="closePModal()">Close</button></div>
+</div>
+</div>
+
+<!-- ══ MODAL: Add Section ══ -->
+<div class="moval" id="sec-modal">
+<div class="mo">
+  <div class="drag-h"></div>
+  <h2>Add Section</h2>
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <div class="fg"><label>Name</label><input type="text" id="sm-name" placeholder="e.g. Top-left flowers"/></div>
+    <div class="fg"><label>Notes (optional)</label><textarea id="sm-note" placeholder="Stitch notes…"></textarea></div>
+  </div>
+  <div class="mo-foot">
+    <button class="btn btn-s btn-sm" onclick="closeSecModal()">Cancel</button>
+    <button class="btn btn-p btn-sm" onclick="confirmSection()">Add</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// FULL DMC COLOR DATABASE
+// ══════════════════════════════════════════════════════════════════════════════
+const SYMS='■▲●★♦✚◆▼○□△☆◇✿❤✦✧⬟⬡⬢✖✗✘✙✜✝✞✠✡✢✣✤✥✩✪✫✬✭✮✯✰✱✲✳✴✵✶✷✸✹✺✻✼✽✾❀❁❂❃❄❅❆❇❈❉❊❋❍❏❐❑❒❖⬤'.split('');
+
+const RAW_DMC=[
+ ['blanc','White','#FFFFFF','White/Cream'],
+ ['B5200','Snow White','#F8F8FF','White/Cream'],
+ ['Ecru','Ecru','#F0EAD6','White/Cream'],
+ ['3865','Winter White','#FAFAFA','White/Cream'],
+ ['746','Off White','#FFFDE7','White/Cream'],
+ ['712','Cream','#FAEBD7','White/Cream'],
+ ['739','Tan Ultra Very Light','#FFF5DC','White/Cream'],
+ ['3823','Yellow Ultra Pale','#FFFDE0','Yellow'],
+ ['3078','Golden Yellow Very Light','#FFFACD','Yellow'],
+ ['727','Topaz Very Light','#FFEEB5','Yellow'],
+ ['745','Yellow Light Pale','#FFEEAA','Yellow'],
+ ['744','Yellow Pale','#FFDD88','Yellow'],
+ ['743','Yellow Medium','#FFCC55','Yellow'],
+ ['742','Tangerine Light','#FFBB33','Yellow'],
+ ['741','Tangerine Medium','#FFAA00','Yellow'],
+ ['740','Tangerine','#FF9900','Orange'],
+ ['725','Topaz Light','#FFCC22','Yellow'],
+ ['726','Topaz','#FFDD44','Yellow'],
+ ['3822','Straw Light','#FFEE77','Yellow'],
+ ['3821','Straw','#EED645','Yellow'],
+ ['3820','Straw Dark','#D4AF37','Yellow'],
+ ['783','Christmas Gold','#CC9900','Yellow'],
+ ['782','Topaz Dark','#C09010','Yellow'],
+ ['781','Topaz Very Dark','#996600','Yellow'],
+ ['780','Topaz Ultra Dark','#804000','Brown'],
+ ['729','Old Gold Medium','#CC9922','Yellow'],
+ ['676','Old Gold Light','#EEDD88','Yellow'],
+ ['677','Old Gold Very Light','#FFEEAA','Yellow'],
+ ['680','Old Gold Dark','#BB8811','Yellow'],
+ ['3852','Straw Very Dark','#BB9900','Yellow'],
+ ['3853','Autumn Gold Dark','#E88010','Orange'],
+ ['3854','Autumn Gold Medium','#F0A020','Orange'],
+ ['3855','Autumn Gold Light','#F8CC44','Yellow'],
+ ['972','Canary Deep','#FFAA00','Yellow'],
+ ['971','Pumpkin','#FF8C00','Orange'],
+ ['970','Pumpkin Light','#FFAA22','Orange'],
+ ['947','Burnt Orange','#FF7722','Orange'],
+ ['946','Burnt Orange Medium','#FF5511','Orange'],
+ ['900','Burnt Orange Dark','#DD3300','Orange'],
+ ['608','Burnt Orange Bright','#FF6600','Orange'],
+ ['3341','Apricot','#FF9966','Orange'],
+ ['3340','Apricot Medium','#FF7744','Orange'],
+ ['3824','Apricot Light','#FFCC99','Orange'],
+ ['353','Peach','#FFC4A0','Orange'],
+ ['352','Coral Light','#FF9977','Orange'],
+ ['351','Coral','#FF7755','Orange'],
+ ['350','Coral Medium','#EE5533','Orange'],
+ ['349','Coral Dark','#CC3311','Red'],
+ ['817','Coral Red Very Dark','#BB1100','Red'],
+ ['3779','Terra Cotta Ultra Very Light','#FFCCBB','Orange'],
+ ['758','Terra Cotta Very Light','#FFBBAA','Orange'],
+ ['3778','Terra Cotta Light','#EEA088','Orange'],
+ ['356','Terra Cotta Medium','#CC7755','Orange'],
+ ['355','Terra Cotta Dark','#AA5533','Brown'],
+ ['3830','Terra Cotta','#BB5533','Orange'],
+ ['3705','Melon Dark','#FF5566','Pink'],
+ ['3706','Melon Medium','#FF8899','Pink'],
+ ['3708','Melon Light','#FFC0C8','Pink'],
+ ['3801','Christmas Red Light','#EE3355','Red'],
+ ['666','Christmas Red Bright','#EE1122','Red'],
+ ['321','Christmas Red','#CC1133','Red'],
+ ['815','Garnet Medium','#AA0022','Red'],
+ ['814','Garnet Dark','#880011','Red'],
+ ['816','Garnet','#BB2233','Red'],
+ ['498','Christmas Red Dark','#990011','Red'],
+ ['902','Garnet Very Dark','#660011','Red'],
+ ['326','Rose Very Dark','#BB1144','Pink'],
+ ['335','Rose','#EE2255','Pink'],
+ ['309','Rose Deep','#DD2255','Pink'],
+ ['3350','Dusty Rose Ultra Dark','#CC3366','Pink'],
+ ['3716','Dusty Rose Very Light','#FFBBCC','Pink'],
+ ['963','Dusty Rose Ultra Very Light','#FFD5E5','Pink'],
+ ['3326','Rose Light','#FFAACC','Pink'],
+ ['776','Pink Medium','#FF99BB','Pink'],
+ ['899','Rose Medium','#FF6699','Pink'],
+ ['3354','Dusty Rose Light','#EE8899','Pink'],
+ ['3733','Dusty Rose','#EE6688','Pink'],
+ ['3731','Dusty Rose Very Dark','#DD4477','Pink'],
+ ['3832','Raspberry Medium','#DD3366','Pink'],
+ ['3833','Raspberry Light','#EE5588','Pink'],
+ ['601','Cranberry Dark','#CC0044','Red'],
+ ['600','Cranberry Very Dark','#BB0033','Red'],
+ ['602','Cranberry Medium','#DD2255','Red'],
+ ['603','Cranberry','#EE4466','Pink'],
+ ['604','Cranberry Light','#FF8899','Pink'],
+ ['605','Cranberry Very Light','#FFAABB','Pink'],
+ ['892','Carnation Medium','#FF7788','Pink'],
+ ['891','Carnation Dark','#FF5566','Pink'],
+ ['893','Carnation Light','#FF99AA','Pink'],
+ ['894','Carnation Very Light','#FFBBCC','Pink'],
+ ['957','Geranium Pale','#FFC0CB','Pink'],
+ ['956','Geranium','#FF8090','Pink'],
+ ['3713','Salmon Very Light','#FFD5CE','Pink'],
+ ['761','Salmon Light','#FFBBAF','Pink'],
+ ['760','Salmon','#F4978E','Pink'],
+ ['3712','Salmon Medium','#EF8077','Pink'],
+ ['3328','Salmon Dark','#E06060','Red'],
+ ['347','Salmon Very Dark','#CC3333','Red'],
+ ['316','Antique Mauve Medium','#BB7799','Pink'],
+ ['315','Antique Mauve Dark','#884466','Pink'],
+ ['3727','Antique Mauve Light','#DDAACC','Pink'],
+ ['778','Antique Mauve Very Light','#EECCDD','Pink'],
+ ['3726','Antique Mauve Dark','#996688','Pink'],
+ ['3687','Mauve','#BB6688','Pink'],
+ ['3688','Mauve Medium','#DD99BB','Pink'],
+ ['3689','Mauve Light','#EECCDD','Pink'],
+ ['3803','Mauve Dark','#994466','Pink'],
+ ['3685','Mauve Very Dark','#772244','Pink'],
+ ['152','Shell Pink Medium Light','#DD9988','Pink'],
+ ['224','Shell Pink Light','#EEBB99','Pink'],
+ ['225','Shell Pink Ultra Light','#FFDDCC','Pink'],
+ ['223','Shell Pink Medium','#CC8877','Pink'],
+ ['221','Shell Pink Very Dark','#884455','Pink'],
+ ['3722','Shell Pink','#BB7766','Pink'],
+ ['3834','Grape Dark','#882255','Purple'],
+ ['3835','Grape Medium','#AA3377','Purple'],
+ ['3836','Grape Light','#CC6699','Purple'],
+ ['718','Plum','#882266','Purple'],
+ ['917','Plum Medium','#AA1166','Purple'],
+ ['915','Plum Dark','#880055','Purple'],
+ ['208','Lavender Very Dark','#8833AA','Purple'],
+ ['209','Lavender Dark','#AA55BB','Purple'],
+ ['210','Lavender Medium','#CC88CC','Purple'],
+ ['211','Lavender Light','#DDAADD','Purple'],
+ ['553','Violet Medium','#9944AA','Purple'],
+ ['552','Violet Dark','#882299','Purple'],
+ ['550','Violet Very Dark','#660077','Purple'],
+ ['554','Violet Light','#CC88CC','Purple'],
+ ['327','Violet Very Dark','#550066','Purple'],
+ ['3837','Lavender Ultra Dark','#663388','Purple'],
+ ['3747','Blue Violet Very Light','#D0D0F0','Purple'],
+ ['340','Blue Violet Medium','#8877CC','Purple'],
+ ['333','Blue Violet Very Dark','#554488','Purple'],
+ ['3746','Blue Violet Dark','#6655AA','Purple'],
+ ['341','Blue Violet Light','#AABBDD','Blue'],
+ ['3042','Antique Violet Light','#AA99BB','Purple'],
+ ['3041','Antique Violet Medium','#886699','Purple'],
+ ['3040','Antique Violet','#774488','Purple'],
+ ['3740','Antique Violet Dark','#665577','Purple'],
+ ['3743','Antique Violet Very Light','#D0C8D8','Purple'],
+ ['500','Blue Green Very Dark','#1A4A2B','Green'],
+ ['501','Blue Green Dark','#2B6B44','Green'],
+ ['502','Blue Green','#3D8C5C','Green'],
+ ['503','Blue Green Medium','#5AA878','Green'],
+ ['504','Blue Green Very Light','#A8D4BC','Green'],
+ ['3817','Celadon Green Light','#A8D4B4','Green'],
+ ['3816','Celadon Green','#72B896','Green'],
+ ['3815','Celadon Green Dark','#4A8C6A','Green'],
+ ['562','Jade Medium','#3A9C6C','Green'],
+ ['561','Jade Very Dark','#2A7A50','Green'],
+ ['563','Jade Light','#70BC94','Green'],
+ ['564','Jade Very Light','#A8D8C0','Green'],
+ ['3818','Emerald Green Ultra Very Dark','#006633','Green'],
+ ['909','Emerald Green Very Dark','#007744','Green'],
+ ['911','Emerald Green Medium','#009955','Green'],
+ ['910','Emerald Green Dark','#008844','Green'],
+ ['912','Emerald Green Light','#22BB66','Green'],
+ ['913','Nile Green Medium','#55CC77','Green'],
+ ['954','Nile Green','#77DD99','Green'],
+ ['955','Nile Green Light','#AAEEBB','Green'],
+ ['966','Baby Green Medium','#AADDBB','Green'],
+ ['369','Pistachio Green Very Light','#CCEECC','Green'],
+ ['368','Pistachio Green Light','#AADDAA','Green'],
+ ['320','Pistachio Green Medium','#77AA77','Green'],
+ ['367','Pistachio Green Dark','#558855','Green'],
+ ['319','Pistachio Green Very Dark','#336644','Green'],
+ ['890','Pistachio Green Ultra Dark','#224433','Green'],
+ ['989','Forest Green','#66AA66','Green'],
+ ['988','Forest Green Medium','#559955','Green'],
+ ['987','Forest Green Dark','#447744','Green'],
+ ['986','Forest Green Very Dark','#336633','Green'],
+ ['3347','Yellow Green Medium','#88AA55','Green'],
+ ['3346','Hunter Green','#557733','Green'],
+ ['3345','Hunter Green Dark','#446622','Green'],
+ ['895','Hunter Green Very Dark','#334411','Green'],
+ ['3348','Yellow Green Light','#AABB77','Green'],
+ ['704','Chartreuse Bright','#BBDD33','Green'],
+ ['703','Chartreuse','#99BB44','Green'],
+ ['702','Kelly Green','#77AA33','Green'],
+ ['701','Christmas Green Light','#558822','Green'],
+ ['700','Christmas Green Bright','#336611','Green'],
+ ['699','Christmas Green','#225500','Green'],
+ ['907','Parrot Green Light','#BBDD44','Green'],
+ ['906','Parrot Green Medium','#99CC22','Green'],
+ ['905','Parrot Green Dark','#77AA11','Green'],
+ ['904','Parrot Green Very Dark','#558800','Green'],
+ ['472','Avocado Green Ultra Light','#CCDD88','Green'],
+ ['471','Avocado Green Very Light','#AABB66','Green'],
+ ['470','Avocado Green Light','#88AA44','Green'],
+ ['469','Avocado Green','#668833','Green'],
+ ['937','Avocado Green Medium','#557722','Green'],
+ ['936','Avocado Green Very Dark','#445511','Green'],
+ ['935','Avocado Green Dark','#446622','Green'],
+ ['934','Avocado Green Black','#334411','Green'],
+ ['581','Moss Green','#778833','Green'],
+ ['580','Moss Green Dark','#556622','Green'],
+ ['3013','Khaki Green Light','#AABB88','Green'],
+ ['3012','Khaki Green Medium','#889966','Green'],
+ ['3011','Khaki Green Dark','#667744','Green'],
+ ['3364','Pine Green','#7A9A5A','Green'],
+ ['3363','Pine Green Medium','#5A7A3A','Green'],
+ ['3362','Pine Green Dark','#3A5A2A','Green'],
+ ['520','Fern Green Dark','#5A7A3A','Green'],
+ ['522','Fern Green','#8AAA6A','Green'],
+ ['523','Fern Green Light','#AABB88','Green'],
+ ['524','Fern Green Very Light','#BBCCAA','Green'],
+ ['3053','Green Gray','#8A9A7A','Green'],
+ ['3052','Green Gray Medium','#6A7A5A','Green'],
+ ['3051','Green Gray Dark','#4A5A3A','Green'],
+ ['165','Moss Green Very Light','#CCDD88','Green'],
+ ['166','Moss Green Medium Light','#99AA44','Green'],
+ ['164','Forest Green Light','#88AA66','Green'],
+ ['163','Celadon Green Medium','#55887A','Green'],
+ ['926','Gray Green Medium','#7A9A99','Blue'],
+ ['927','Gray Green Light','#AABBBB','Blue'],
+ ['928','Gray Green Very Light','#CCDDDD','Blue'],
+ ['924','Gray Green Very Dark','#4A6A6A','Blue'],
+ ['3768','Gray Green Dark','#5A7A7A','Blue'],
+ ['806','Peacock Blue Dark','#2A8899','Blue'],
+ ['807','Peacock Blue','#3A99AA','Blue'],
+ ['3810','Turquoise Dark','#2A9999','Blue'],
+ ['597','Turquoise','#3AAAAA','Blue'],
+ ['598','Turquoise Light','#66BBBB','Blue'],
+ ['3811','Turquoise Very Light','#99DDDD','Blue'],
+ ['964','Seagreen Light','#AADDDD','Blue'],
+ ['3766','Peacock Blue Light','#88CCCC','Blue'],
+ ['3848','Teal Green Dark','#227777','Blue'],
+ ['3847','Teal Green','#338888','Blue'],
+ ['3849','Teal Green Light','#55AAAA','Blue'],
+ ['958','Sea Green Dark','#33AAAA','Blue'],
+ ['959','Sea Green Medium','#66BBBB','Blue'],
+ ['943','Aquamarine Medium','#22BB99','Blue'],
+ ['3845','Bright Turquoise Medium','#00AACC','Blue'],
+ ['3846','Bright Turquoise Light','#22BBDD','Blue'],
+ ['3844','Bright Turquoise Dark','#0099BB','Blue'],
+ ['747','Sky Blue Very Light','#E8FAFA','Blue'],
+ ['828','Sky Blue Ultra Very Light','#CCEEFF','Blue'],
+ ['3761','Sky Blue Light','#AADDEE','Blue'],
+ ['519','Sky Blue','#77AACC','Blue'],
+ ['518','Wedgwood Light','#4488AA','Blue'],
+ ['517','Wedgwood','#336699','Blue'],
+ ['3760','Wedgwood Medium','#3377AA','Blue'],
+ ['3753','Antique Blue Ultra Very Light','#DDE8EE','Blue'],
+ ['3752','Antique Blue Very Light','#AABBCC','Blue'],
+ ['932','Antique Blue Light','#8899AA','Blue'],
+ ['931','Antique Blue Medium','#6677AA','Blue'],
+ ['930','Antique Blue Dark','#445577','Blue'],
+ ['3750','Antique Blue Very Dark','#334466','Blue'],
+ ['3840','Lavender Blue Light','#AABBEE','Blue'],
+ ['3839','Lavender Blue Medium','#8899DD','Blue'],
+ ['3838','Lavender Blue Dark','#6677CC','Blue'],
+ ['334','Baby Blue Medium','#5588BB','Blue'],
+ ['322','Baby Blue Dark','#4477AA','Blue'],
+ ['312','Navy Blue Light','#2255AA','Blue'],
+ ['311','Navy Blue Medium','#1144AA','Blue'],
+ ['336','Navy Blue','#112288','Blue'],
+ ['823','Navy Blue Dark','#001166','Blue'],
+ ['939','Navy Blue Very Dark','#001155','Blue'],
+ ['797','Royal Blue','#1133CC','Blue'],
+ ['796','Royal Blue Dark','#001199','Blue'],
+ ['995','Electric Blue Dark','#0066CC','Blue'],
+ ['996','Electric Blue Medium','#1177DD','Blue'],
+ ['3843','Electric Blue','#2288EE','Blue'],
+ ['3842','Wedgwood Dark','#3366AA','Blue'],
+ ['3841','Pale Cornflower Blue','#BBCCEE','Blue'],
+ ['800','Delft Blue Pale','#AABBDD','Blue'],
+ ['809','Delft Blue','#7799CC','Blue'],
+ ['799','Delft Blue Medium','#5577BB','Blue'],
+ ['798','Delft Blue Dark','#4466AA','Blue'],
+ ['794','Cornflower Blue Light','#8899CC','Blue'],
+ ['793','Cornflower Blue Medium','#6677BB','Blue'],
+ ['792','Cornflower Blue Dark','#5566AA','Blue'],
+ ['791','Cornflower Blue Very Dark','#334488','Blue'],
+ ['3807','Cornflower Blue','#4455AA','Blue'],
+ ['3325','Baby Blue Light','#99BBDD','Blue'],
+ ['827','Blue Very Light','#BBDDEE','Blue'],
+ ['826','Blue Medium','#77AACC','Blue'],
+ ['825','Blue Dark','#5599BB','Blue'],
+ ['824','Blue Very Dark','#3377AA','Blue'],
+ ['3755','Baby Blue','#88AACC','Blue'],
+ ['157','Cornflower Blue Very Light','#AABBDD','Blue'],
+ ['3756','Baby Blue Ultra Very Light','#DDEEFF','Blue'],
+ ['775','Baby Blue Very Light','#DDEEFF','Blue'],
+ ['160','Gray Blue Medium','#8899AA','Blue'],
+ ['161','Gray Blue','#7788AA','Blue'],
+ ['162','Blue Ultra Very Light','#DDEEFF','Blue'],
+ ['422','Hazel Nut Brown Light','#CC9966','Brown'],
+ ['420','Hazel Nut Brown Dark','#AA7733','Brown'],
+ ['869','Hazel Nut Brown Very Dark','#886622','Brown'],
+ ['3045','Yellow Beige Dark','#CCAA77','Brown'],
+ ['3046','Yellow Beige Medium','#DDBB88','Brown'],
+ ['3047','Yellow Beige Light','#EECCAA','Brown'],
+ ['613','Drab Brown Very Light','#DDBBA0','Brown'],
+ ['612','Drab Brown Light','#CCAA88','Brown'],
+ ['611','Drab Brown','#BB9977','Brown'],
+ ['610','Drab Brown Dark','#997755','Brown'],
+ ['3033','Mocha Brown Very Light','#DDCCBB','Brown'],
+ ['3032','Mocha Brown Medium','#CCBBAA','Brown'],
+ ['3031','Mocha Brown Very Dark','#887766','Brown'],
+ ['3782','Mocha Brown Light','#DDCCAA','Brown'],
+ ['3781','Mocha Brown Dark','#886644','Brown'],
+ ['839','Beige Brown Dark','#776655','Brown'],
+ ['838','Beige Brown Very Dark','#665544','Brown'],
+ ['840','Beige Brown Medium','#997766','Brown'],
+ ['841','Beige Brown Light','#AA8877','Brown'],
+ ['842','Beige Brown Very Light','#CCAA99','Brown'],
+ ['543','Beige Brown Ultra Very Light','#EEDDCC','Brown'],
+ ['3774','Desert Sand Very Light','#FFEECC','Brown'],
+ ['3772','Desert Sand Very Dark','#AA7755','Brown'],
+ ['407','Desert Sand Medium','#CC8866','Brown'],
+ ['3770','Tawny Very Light','#FFDDBB','Brown'],
+ ['945','Tawny','#FFCC99','Brown'],
+ ['3827','Golden Brown Pale','#FFBB77','Brown'],
+ ['977','Golden Brown Light','#EEA455','Brown'],
+ ['976','Golden Brown Medium','#DD8833','Brown'],
+ ['3826','Golden Brown','#CC7722','Brown'],
+ ['975','Golden Brown Dark','#AA5511','Brown'],
+ ['3857','Rosewood Dark','#882211','Brown'],
+ ['801','Coffee Brown Dark','#663311','Brown'],
+ ['938','Coffee Brown Ultra Dark','#441100','Brown'],
+ ['632','Desert Sand Ultra Very Dark','#774422','Brown'],
+ ['3862','Mocha Beige Dark','#997755','Brown'],
+ ['3863','Mocha Beige Medium','#AA8866','Brown'],
+ ['3864','Mocha Beige Light','#CCAA88','Brown'],
+ ['3861','Cocoa Light','#CC9988','Brown'],
+ ['3860','Cocoa','#AA7766','Brown'],
+ ['738','Tan Very Light','#FAEBD7','Brown'],
+ ['437','Tan Light','#EAC199','Brown'],
+ ['436','Tan','#D4936A','Brown'],
+ ['435','Brown Very Light','#C47A45','Brown'],
+ ['434','Brown Light','#A05C2C','Brown'],
+ ['433','Brown Medium','#8B4513','Brown'],
+ ['898','Coffee Brown Very Dark','#4A1C00','Brown'],
+ ['3371','Black Brown','#1C0A00','Brown'],
+ ['167','Yellow Beige Very Dark','#AA8833','Brown'],
+ ['762','Pearl Gray Very Light','#EEEEEE','Grey'],
+ ['415','Pearl Gray','#CCCCCC','Grey'],
+ ['318','Steel Gray Light','#AAAAAA','Grey'],
+ ['414','Steel Gray Dark','#888888','Grey'],
+ ['317','Pewter Gray','#777777','Grey'],
+ ['413','Pewter Gray Dark','#555555','Grey'],
+ ['3787','Brown Gray Dark','#554444','Grey'],
+ ['3024','Brown Gray Very Light','#DDDDCC','Grey'],
+ ['3023','Brown Gray Light','#BBBB99','Grey'],
+ ['3022','Brown Gray Medium','#999977','Grey'],
+ ['3799','Pewter Gray Very Dark','#333333','Grey'],
+ ['844','Beaver Gray Ultra Dark','#444444','Grey'],
+ ['822','Beige Gray Light','#DDDDC8','Grey'],
+ ['644','Beige Gray Medium','#C8C8AC','Grey'],
+ ['642','Beige Gray Dark','#AAAAAA','Grey'],
+ ['640','Beige Gray Very Dark','#888877','Grey'],
+ ['168','Pewter Very Light','#DDDDDD','Grey'],
+ ['169','Pewter Light','#CCCCCC','Grey'],
+ ['3072','Beaver Gray Very Light','#DDDDDD','Grey'],
+ ['648','Beaver Gray Light','#AAAAAA','Grey'],
+ ['647','Beaver Gray Medium','#888888','Grey'],
+ ['646','Beaver Gray Dark','#666666','Grey'],
+ ['645','Beaver Gray Very Dark','#555555','Grey'],
+ ['535','Ash Gray Very Light','#777788','Grey'],
+ ['310','Black','#000000','Black'],
+ ['3799','Pewter Very Dark','#333333','Black'],
+];
+
+// Build DMC with symbols, deduplicated
+const DMC_DB=[];const _seen=new Set();
+RAW_DMC.forEach(([code,name,hex,family],i)=>{
+  if(_seen.has(code))return;_seen.add(code);
+  DMC_DB.push({code,name,hex,family,symbol:SYMS[DMC_DB.length%SYMS.length]});
+});
+
+function hexToRgb(h){const n=parseInt(h.replace('#',''),16);return[(n>>16)&255,(n>>8)&255,n&255];}
+function colorDist(h1,h2){const[r1,g1,b1]=hexToRgb(h1),[r2,g2,b2]=hexToRgb(h2);return(r1-r2)**2+(g1-g2)**2+(b1-b2)**2;}
+function closestDMC(hex){let best=null,bd=Infinity;DMC_DB.forEach(d=>{const dist=colorDist(hex,d.hex);if(dist<bd){bd=dist;best=d;}});return best;}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════════════════
+let patterns=[];
+let pendingIdx=null;
+let activeIdx=null;
+let activePage=0;
+let zoom=1;
+let gridCols=50,gridRows=50;
+let activeColor=''; // color hex filter
+let stitchOverlayVisible=true;
+let pendingImgPages=[]; // [{dataUrl,name}]
+let pendingCreating=false;
+
+// Load
+function loadState(){
+  try{patterns=JSON.parse(localStorage.getItem('ssp3_pats')||'[]');}catch(e){patterns=[];}
+  try{const t=JSON.parse(localStorage.getItem('ssp3_tr')||'null');if(t){activeIdx=t.ai;activePage=t.ap||0;}}catch(e){}
+}
+function saveState(){localStorage.setItem('ssp3_pats',JSON.stringify(patterns));}
+function saveTr(){localStorage.setItem('ssp3_tr',JSON.stringify({ai:activeIdx,ap:activePage}));}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TAB SYSTEM
+// ══════════════════════════════════════════════════════════════════════════════
+function goTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelectorAll('.ntab').forEach(t=>{if(t.getAttribute('onclick')?.includes("'"+id+"'"))t.classList.add('active');});
+  if(id==='patterns')renderPatList();
+  if(id==='tracker')renderTracker();
+  if(id==='dmc'){renderDMCTable(DMC_DB);document.getElementById('dmc-count').textContent=`(${DMC_DB.length} colors)`;}
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ADD PATTERN MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+function openAddModal(){
+  pendingImgPages=[];
+  document.getElementById('ap-name').value='';
+  document.getElementById('ap-cols').value='50';
+  document.getElementById('ap-rows').value='50';
+  document.getElementById('ap-sr').value='3';
+  document.getElementById('ap-sc').value='3';
+  document.getElementById('up-status').textContent='';
+  document.getElementById('uparea').innerHTML='<span class="upicon">📂</span><div style="font-size:0.82rem;color:var(--muted);">Tap to open PDF or image<br><span style="font-size:0.7rem;">PDF: all pages imported · JPG/PNG also supported</span></div>';
+  document.getElementById('add-modal').classList.add('open');
+}
+function closeAddModal(){document.getElementById('add-modal').classList.remove('open');}
+
+function dragOv(e){e.preventDefault();document.getElementById('uparea').classList.add('drag');}
+function dropF(e){e.preventDefault();document.getElementById('uparea').classList.remove('drag');handleFiles(Array.from(e.dataTransfer.files));}
+function handleFileInput(e){handleFiles(Array.from(e.target.files));e.target.value='';}
+
+async function handleFiles(files){
+  pendingImgPages=[];
+  const statusEl=document.getElementById('up-status');
+  statusEl.textContent='⏳ Processing…';
+  document.getElementById('create-btn').disabled=true;
+  for(const f of files){
+    if(f.type==='application/pdf'){await readPDF(f);}
+    else if(f.type.startsWith('image/')){
+      const url=await fileToDataURL(f);
+      pendingImgPages.push({dataUrl:url,name:f.name});
+    }
+  }
+  document.getElementById('create-btn').disabled=false;
+  statusEl.textContent=`✓ ${pendingImgPages.length} page(s) ready to import`;
+  const area=document.getElementById('uparea');
+  if(pendingImgPages.length){
+    area.innerHTML=`<span class="upicon">✅</span><div style="font-size:0.82rem;color:var(--muted);"><b>${pendingImgPages.length} page(s) loaded</b><br><span style="font-size:0.7rem;">${pendingImgPages.slice(0,3).map(p=>p.name).join(', ')}${pendingImgPages.length>3?'…':''}</span></div>`;
+  }
+}
+
+function fileToDataURL(file){return new Promise(r=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.readAsDataURL(file);});}
+
+async function readPDF(file){
+  const statusEl=document.getElementById('up-status');
+  if(!window.pdfjsLib){
+    statusEl.textContent='⏳ Loading PDF engine…';
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  for(let p=1;p<=pdf.numPages;p++){
+    statusEl.textContent=`⏳ Rendering page ${p}/${pdf.numPages}…`;
+    const page=await pdf.getPage(p);
+    const vp=page.getViewport({scale:2.5}); // High-res render
+    const c=document.createElement('canvas');
+    c.width=vp.width;c.height=vp.height;
+    await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+    pendingImgPages.push({dataUrl:c.toDataURL('image/png'),name:`Page ${p}`});
+  }
+}
+
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+
+async function createPattern(){
+  if(pendingCreating)return;
+  pendingCreating=true;
+  const name=document.getElementById('ap-name').value.trim()||`Pattern ${patterns.length+1}`;
+  const cols=parseInt(document.getElementById('ap-cols').value)||50;
+  const rows=parseInt(document.getElementById('ap-rows').value)||50;
+  const sr=parseInt(document.getElementById('ap-sr').value)||3;
+  const sc=parseInt(document.getElementById('ap-sc').value)||3;
+
+  const pages=[];
+  const pagesData=pendingImgPages.length?pendingImgPages:[{dataUrl:null,name:'Page 1'}];
+
+  for(let pi=0;pi<pagesData.length;pi++){
+    const pd=pagesData[pi];
+    // Detect colors from image
+    let detectedPalette=[];
+    if(pd.dataUrl){
+      const hexColors=await detectColors(pd.dataUrl);
+      detectedPalette=hexColors.map((h,i)=>{
+        const dmc=closestDMC(h);
+        return{color:dmc?dmc.hex:h,code:dmc?dmc.code:'custom',label:dmc?dmc.name:`Color ${i+1}`,symbol:SYMS[i%SYMS.length],detected:h};
+      });
+    }
+    // Build sections
+    const secs=[];
+    for(let r=0;r<sr;r++)for(let c=0;c<sc;c++){
+      secs.push({id:`${pi}-${r}-${c}`,name:`Section ${r+1}·${c+1}`,row:r,col:c,done:false,note:''});
+    }
+    pages.push({dataUrl:pd.dataUrl,name:pd.name,cols,rows,palette:detectedPalette,sections:secs,secRows:sr,secCols:sc,stitched:{}});
+  }
+
+  // Global palette = union of all pages
+  const globalPalette=[];const _s=new Set();
+  pages.forEach(pg=>pg.palette.forEach(p=>{if(!_s.has(p.code)){_s.add(p.code);globalPalette.push(p);}}));
+
+  const pat={id:Date.now(),name,pages,palette:globalPalette,sessions:[],created:new Date().toLocaleDateString()};
+  patterns.push(pat);
+  saveState();
+  closeAddModal();
+  pendingCreating=false;
+  renderPatList();
+}
+
+async function detectColors(dataUrl){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const scale=Math.min(1,200/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+      const cx=c.getContext('2d');cx.drawImage(img,0,0,c.width,c.height);
+      const data=cx.getImageData(0,0,c.width,c.height).data;
+      const map={};
+      for(let i=0;i<data.length;i+=4){
+        const a=data[i+3];if(a<200)continue;
+        const r=Math.round(data[i]/16)*16,g=Math.round(data[i+1]/16)*16,b=Math.round(data[i+2]/16)*16;
+        if(r>235&&g>235&&b>235)continue; // skip white bg
+        if(r<20&&g<20&&b<20)continue; // skip grid lines
+        const k=`${r},${g},${b}`;map[k]=(map[k]||0)+1;
+      }
+      const top=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,40);
+      const hex=top.map(([k])=>{const[r,g,b]=k.split(',').map(Number);return`#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;});
+      resolve(hex);
+    };
+    img.src=dataUrl;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PATTERN LIST
+// ══════════════════════════════════════════════════════════════════════════════
+function renderPatList(){
+  const el=document.getElementById('pat-list');el.innerHTML='';
+  if(!patterns.length){
+    el.innerHTML='<div class="empty"><span class="empty-icon">🪡</span><p>No patterns yet.<br>Tap <b>Add Pattern</b> to import a PDF!</p></div>';return;
+  }
+  patterns.forEach((p,i)=>{
+    const div=document.createElement('div');
+    div.className='pat-card'+(activeIdx===i?' active-track':'');
+    const thumb=document.createElement('div');thumb.className='pat-thumb';
+    if(p.pages?.[0]?.dataUrl){const img=document.createElement('img');img.src=p.pages[0].dataUrl;thumb.appendChild(img);}
+    else thumb.innerHTML='<span style="font-size:2.5rem;">🧵</span>';
+    const totalSecs=p.pages.reduce((a,pg)=>a+(pg.sections?.length||0),0);
+    const doneSecs=p.pages.reduce((a,pg)=>a+(pg.sections?.filter(s=>s.done).length||0),0);
+    const totalSt=p.pages.reduce((a,pg)=>a+Object.keys(pg.stitched||{}).length,0);
+    div.appendChild(thumb);
+    div.innerHTML+=`${activeIdx===i?'<div class="pat-badge">Tracking</div>':''}
+      <div class="pat-name">${p.name}</div>
+      <div class="pat-meta">${p.pages.length} page(s) · ${p.palette.length} colors</div>
+      <div class="pat-meta">${doneSecs}/${totalSecs} sections · ${totalSt} stitched</div>
+      <div class="pat-meta" style="color:var(--muted);">${p.created}</div>`;
+    div.onclick=()=>openPModal(i);
+    el.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PATTERN MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+function openPModal(i){
+  pendingIdx=i;
+  document.getElementById('pm-name').textContent=patterns[i].name;
+  document.getElementById('pat-modal').classList.add('open');
+}
+function closePModal(){document.getElementById('pat-modal').classList.remove('open');}
+
+function startTracking(){
+  activeIdx=pendingIdx;activePage=0;saveTr();closePModal();
+  goTab('tracker');
+}
+function exportPat(){
+  const p=patterns[pendingIdx];
+  // Export without full image data for size
+  const exp={...p,pages:p.pages.map(pg=>({...pg,dataUrl:pg.dataUrl?'[image data]':null}))};
+  const blob=new Blob([JSON.stringify(exp,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=p.name.replace(/\s+/g,'_')+'.json';a.click();
+  closePModal();
+}
+function deletePat(){
+  if(!confirm(`Delete "${patterns[pendingIdx].name}"?`))return;
+  if(activeIdx===pendingIdx){activeIdx=null;saveTr();}
+  patterns.splice(pendingIdx,1);
+  if(activeIdx>pendingIdx)activeIdx--;
+  saveState();closePModal();renderPatList();
+  if(activeIdx==null){document.getElementById('tr-pat-title').textContent='— No Pattern Loaded —';}
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TRACKER
+// ══════════════════════════════════════════════════════════════════════════════
+function renderTracker(){
+  if(activeIdx==null||!patterns[activeIdx]){
+    document.getElementById('tr-pat-title').textContent='— No Pattern Loaded —';
+    document.getElementById('tr-pat-sub').textContent='Open a pattern from My Patterns';
+    return;
+  }
+  const p=patterns[activeIdx];
+  document.getElementById('tr-pat-title').textContent=p.name;
+  document.getElementById('tr-pat-sub').textContent=`Page ${activePage+1} of ${p.pages.length} · ${p.palette.length} colors detected`;
+
+  // Page bar
+  const pagebar=document.getElementById('tr-pagebar');
+  pagebar.style.display=p.pages.length>1?'flex':'none';
+  renderPageThumbs(p);
+
+  // Grid inputs
+  const pg=p.pages[activePage];
+  if(pg){
+    document.getElementById('grid-cols').value=pg.cols;
+    document.getElementById('grid-rows').value=pg.rows;
+    gridCols=pg.cols;gridRows=pg.rows;
+  }
+
+  // Color selector
+  buildColorSelector(p);
+
+  renderCurrentPage(p);
+  renderSections(p);
+  renderNotes(p);
+  updateStats(p);
+  renderSymLegend(p);
+}
+
+function renderPageThumbs(p){
+  const el=document.getElementById('pg-thumbs');el.innerHTML='';
+  p.pages.forEach((pg,i)=>{
+    const btn=document.createElement('div');
+    btn.className='pg-thumb-btn'+(activePage===i?' active':'');
+    if(pg.dataUrl){const img=document.createElement('img');img.src=pg.dataUrl;btn.appendChild(img);}
+    else btn.innerHTML='<div style="font-size:0.7rem;display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);">'+(i+1)+'</div>';
+    btn.onclick=()=>{activePage=i;saveTr();renderTracker();};
+    el.appendChild(btn);
+  });
+}
+
+function buildColorSelector(p){
+  const sel=document.getElementById('active-color-sel');
+  sel.innerHTML='<option value="">All colors (toggle any)</option>';
+  p.palette.forEach(pal=>{
+    const opt=document.createElement('option');
+    opt.value=pal.color;
+    opt.textContent=`${pal.symbol} ${pal.code} – ${pal.label}`;
+    sel.appendChild(opt);
+  });
+  sel.value=activeColor||'';
+}
+function selectActiveColor(){activeColor=document.getElementById('active-color-sel').value;}
+
+function renderCurrentPage(p){
+  const pg=p.pages[activePage];
+  const img=document.getElementById('tr-pattern-img');
+  const canv=document.getElementById('tr-pattern-canvas');
+
+  if(pg?.dataUrl){
+    img.style.display='block';canv.style.display='none';
+    img.onload=()=>afterImgLoad(p,pg);
+    img.src=pg.dataUrl;
+    img.style.transform=`scale(${zoom})`;
+    img.style.transformOrigin='top left';
+  } else {
+    img.style.display='none';canv.style.display='block';
+    drawBlankGrid(canv,pg||{cols:gridCols,rows:gridRows},zoom);
+    setupCellOverlay(p,pg||{cols:gridCols,rows:gridRows,stitched:{}});
+    drawStitchOverlay(p,pg||{cols:gridCols,rows:gridRows,stitched:{}});
+  }
+}
+
+function afterImgLoad(p,pg){
+  const img=document.getElementById('tr-pattern-img');
+  const w=img.naturalWidth*zoom;
+  const h=img.naturalHeight*zoom;
+  img.style.width=w+'px';img.style.height=h+'px';
+  img.style.transform='';img.style.transformOrigin='';
+
+  // Size the inner container
+  const inner=document.getElementById('tr-canvas-inner');
+  inner.style.width=w+'px';inner.style.height=h+'px';
+
+  // Size overlays
+  const svgEl=document.getElementById('stitch-overlay');
+  svgEl.style.width=w+'px';svgEl.style.height=h+'px';
+  svgEl.setAttribute('width',w);svgEl.setAttribute('height',h);
+  svgEl.setAttribute('viewBox',`0 0 ${w} ${h}`);
+
+  const cellOv=document.getElementById('cell-overlay');
+  cellOv.width=w;cellOv.height=h;
+  cellOv.style.width=w+'px';cellOv.style.height=h+'px';
+
+  setupCellOverlay(p,pg);
+  drawStitchOverlay(p,pg);
+}
+
+function drawBlankGrid(canvas,pg,z){
+  const CELL=Math.max(6,Math.min(20,300/Math.max(pg.cols,pg.rows)));
+  const w=pg.cols*CELL*z,h=pg.rows*CELL*z;
+  canvas.width=w;canvas.height=h;
+  canvas.style.width=w+'px';canvas.style.height=h+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#fdf8f5';ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='#e2cdd0';ctx.lineWidth=0.5;
+  for(let x=0;x<=pg.cols;x++){ctx.beginPath();ctx.moveTo(x*CELL*z,0);ctx.lineTo(x*CELL*z,h);ctx.stroke();}
+  for(let y=0;y<=pg.rows;y++){ctx.beginPath();ctx.moveTo(0,y*CELL*z);ctx.lineTo(w,y*CELL*z);ctx.stroke();}
+  const inner=document.getElementById('tr-canvas-inner');
+  inner.style.width=w+'px';inner.style.height=h+'px';
+  const svgEl=document.getElementById('stitch-overlay');
+  svgEl.style.width=w+'px';svgEl.style.height=h+'px';
+  svgEl.setAttribute('width',w);svgEl.setAttribute('height',h);
+  svgEl.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  const cellOv=document.getElementById('cell-overlay');
+  cellOv.width=w;cellOv.height=h;
+  cellOv.style.width=w+'px';cellOv.style.height=h+'px';
+}
+
+// ── CELL OVERLAY (click grid) ──
+function setupCellOverlay(p,pg){
+  const cellOv=document.getElementById('cell-overlay');
+  const rect=cellOv.getBoundingClientRect();
+  const W=cellOv.width,H=cellOv.height;
+  const cellW=W/pg.cols,cellH=H/pg.rows;
+
+  // Remove old listeners
+  const newOv=cellOv.cloneNode(false);
+  cellOv.parentNode.replaceChild(newOv,cellOv);
+
+  let isDown=false,lastCell=null;
+
+  function getCell(ex,ey){
+    const r=newOv.getBoundingClientRect();
+    const scX=newOv.width/r.width,scY=newOv.height/r.height;
+    const px=(ex-r.left)*scX,py=(ey-r.top)*scY;
+    const col=Math.floor(px/cellW),row=Math.floor(py/cellH);
+    if(col<0||col>=pg.cols||row<0||row>=pg.rows)return null;
+    return{col,row,key:`${col},${row}`};
+  }
+
+  function toggleCell(ex,ey,force){
+    const cell=getCell(ex,ey);if(!cell)return;
+    const k=cell.key;
+    if(lastCell===k)return;lastCell=k;
+    // Filter by active color if set
+    if(activeColor){
+      // mark with active color
+      pg.stitched[k]={done:true,color:activeColor};
+    } else {
+      if(pg.stitched[k])delete pg.stitched[k];
+      else pg.stitched[k]={done:true,color:p.palette[0]?.color||'#c4686d'};
+    }
+    saveState();
+    drawStitchOverlay(p,pg);
+    updateStats(p);
+  }
+
+  newOv.addEventListener('mousedown',e=>{isDown=true;lastCell=null;toggleCell(e.clientX,e.clientY);});
+  newOv.addEventListener('mousemove',e=>{if(isDown)toggleCell(e.clientX,e.clientY);});
+  newOv.addEventListener('mouseup',()=>{isDown=false;lastCell=null;});
+  newOv.addEventListener('mouseleave',()=>{isDown=false;lastCell=null;});
+
+  // Touch
+  newOv.addEventListener('touchstart',e=>{e.preventDefault();isDown=true;lastCell=null;const t=e.touches[0];toggleCell(t.clientX,t.clientY);},{passive:false});
+  newOv.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];toggleCell(t.clientX,t.clientY);},{passive:false});
+  newOv.addEventListener('touchend',()=>{isDown=false;lastCell=null;},{passive:false});
+}
+
+// ── SVG STITCH OVERLAY ──
+function drawStitchOverlay(p,pg){
+  const svgEl=document.getElementById('stitch-overlay');
+  svgEl.innerHTML='';
+  const W=parseFloat(svgEl.getAttribute('width')||svgEl.style.width)||svgEl.clientWidth;
+  const H=parseFloat(svgEl.getAttribute('height')||svgEl.style.height)||svgEl.clientHeight;
+  if(!W||!H)return;
+  const cellW=W/pg.cols,cellH=H/pg.rows;
+
+  Object.entries(pg.stitched||{}).forEach(([key,val])=>{
+    if(!val?.done)return;
+    const[col,row]=key.split(',').map(Number);
+    const x=col*cellW,y=row*cellH;
+    const color=val.color||p.palette[0]?.color||'#c4686d';
+    // Filled square (semi-transparent)
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',x+0.5);rect.setAttribute('y',y+0.5);
+    rect.setAttribute('width',cellW-1);rect.setAttribute('height',cellH-1);
+    rect.setAttribute('fill',color);rect.setAttribute('fill-opacity','0.72');
+    rect.setAttribute('rx','1');
+    svgEl.appendChild(rect);
+    // X stitch lines
+    if(cellW>=6){
+      const l1=document.createElementNS('http://www.w3.org/2000/svg','line');
+      l1.setAttribute('x1',x+2);l1.setAttribute('y1',y+2);
+      l1.setAttribute('x2',x+cellW-2);l1.setAttribute('y2',y+cellH-2);
+      l1.setAttribute('stroke','#fff');l1.setAttribute('stroke-width',Math.max(0.8,cellW*0.1));l1.setAttribute('stroke-linecap','round');
+      svgEl.appendChild(l1);
+      const l2=document.createElementNS('http://www.w3.org/2000/svg','line');
+      l2.setAttribute('x1',x+cellW-2);l2.setAttribute('y1',y+2);
+      l2.setAttribute('x2',x+2);l2.setAttribute('y2',y+cellH-2);
+      l2.setAttribute('stroke','#fff');l2.setAttribute('stroke-width',Math.max(0.8,cellW*0.1));l2.setAttribute('stroke-linecap','round');
+      svgEl.appendChild(l2);
+    }
+  });
+}
+
+// ── STATS ──
+function updateStats(p){
+  let total=0,done=0;
+  p.pages.forEach(pg=>{
+    // Estimate total = cols*rows of colored cells (or just track stitched vs grid)
+    done+=Object.keys(pg.stitched||{}).length;
+    total+=pg.cols*pg.rows; // full grid as potential stitches
+  });
+  // Actually use palette-based estimate: each page col*row
+  const pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('tr-done').textContent=done;
+  document.getElementById('tr-left').textContent=total-done;
+  document.getElementById('tr-pct').textContent=pct+'%';
+  document.getElementById('tr-prog').style.width=pct+'%';
+}
+
+// ── ZOOM ──
+function changeZoom(delta){
+  zoom=Math.max(0.2,Math.min(8,zoom+delta));
+  document.getElementById('zlbl').textContent=Math.round(zoom*100)+'%';
+  if(activeIdx!=null)renderCurrentPage(patterns[activeIdx]);
+}
+
+// ── GRID ──
+function applyGrid(){
+  if(activeIdx==null)return;
+  const p=patterns[activeIdx];
+  const pg=p.pages[activePage];if(!pg)return;
+  pg.cols=Math.max(5,Math.min(500,parseInt(document.getElementById('grid-cols').value)||50));
+  pg.rows=Math.max(5,Math.min(500,parseInt(document.getElementById('grid-rows').value)||50));
+  gridCols=pg.cols;gridRows=pg.rows;
+  saveState();
+  renderCurrentPage(p);
+}
+
+// ── SYMBOL PANEL ──
+function toggleSymPanel(){document.getElementById('symbol-panel').classList.toggle('open');}
+function renderSymLegend(p){
+  const el=document.getElementById('sym-legend-content');el.innerHTML='';
+  p.palette.forEach(pal=>{
+    const div=document.createElement('div');
+    div.className='sym-leg-item'+(activeColor===pal.color?' active-col':'');
+    div.innerHTML=`<div class="sym-box" style="background:${pal.color};">${pal.symbol}</div>
+      <div class="sym-info"><div class="sym-name">${pal.label}</div><div class="sym-code">DMC ${pal.code}</div></div>`;
+    div.onclick=()=>{
+      activeColor=activeColor===pal.color?'':pal.color;
+      document.getElementById('active-color-sel').value=activeColor;
+      renderSymLegend(p);
+    };
+    el.appendChild(div);
+  });
+  if(!el.children.length)el.innerHTML='<div style="font-size:0.78rem;color:var(--muted);">No colors detected yet.</div>';
+}
+
+// ── SECTIONS ──
+function toggleSecPanel(){document.getElementById('section-panel').classList.toggle('open');}
+function renderSections(p){
+  const el=document.getElementById('sec-list');el.innerHTML='';
+  const pg=p.pages[activePage];
+  if(!pg?.sections?.length){el.innerHTML='<div style="font-size:0.78rem;color:var(--muted);">No sections.</div>';return;}
+  pg.sections.forEach((sec,si)=>{
+    const div=document.createElement('div');
+    div.className='sec-item'+(sec.done?' done':'');
+    div.innerHTML=`<div class="sec-chk">${sec.done?'✓':''}</div>
+      <div style="flex:1;"><div style="font-size:0.78rem;font-weight:600;">${sec.name}</div>${sec.note?`<div style="font-size:0.65rem;color:var(--muted);">${sec.note}</div>`:''}</div>
+      <button class="btn btn-d btn-sm btn-icon" onclick="removeSection(${si},event)" style="flex-shrink:0;">×</button>`;
+    div.onclick=e=>{if(e.target.tagName==='BUTTON')return;sec.done=!sec.done;saveState();renderSections(p);updateStats(p);};
+    el.appendChild(div);
+  });
+}
+function addSection(){document.getElementById('sm-name').value='';document.getElementById('sm-note').value='';document.getElementById('sec-modal').classList.add('open');}
+function closeSecModal(){document.getElementById('sec-modal').classList.remove('open');}
+function confirmSection(){
+  if(activeIdx==null)return;
+  const p=patterns[activeIdx];const pg=p.pages[activePage];
+  const name=document.getElementById('sm-name').value.trim()||`Section ${(pg.sections?.length||0)+1}`;
+  const note=document.getElementById('sm-note').value.trim();
+  if(!pg.sections)pg.sections=[];
+  pg.sections.push({id:`c${Date.now()}`,name,note,done:false,row:0,col:0});
+  saveState();closeSecModal();renderSections(p);
+}
+function removeSection(si,e){
+  e.stopPropagation();
+  const p=patterns[activeIdx];p.pages[activePage].sections.splice(si,1);
+  saveState();renderSections(p);
+}
+
+// ── PAGE MANAGEMENT ──
+function addPageToPattern(){
+  if(activeIdx==null)return;
+  const p=patterns[activeIdx];
+  const last=p.pages[p.pages.length-1];
+  const secs=[];const pi=p.pages.length;
+  const sr=last?.secRows||3,sc=last?.secCols||3;
+  for(let r=0;r<sr;r++)for(let c=0;c<sc;c++)secs.push({id:`${pi}-${r}-${c}`,name:`Section ${r+1}·${c+1}`,row:r,col:c,done:false,note:''});
+  p.pages.push({dataUrl:null,name:`Page ${pi+1}`,cols:last?.cols||50,rows:last?.rows||50,palette:[],sections:secs,secRows:sr,secCols:sc,stitched:{}});
+  activePage=p.pages.length-1;saveTr();saveState();renderTracker();
+}
+
+// ── NOTES ──
+function toggleNotesPanel(){document.getElementById('notes-panel').classList.toggle('open');}
+function addNote(){
+  if(activeIdx==null)return;
+  const t=document.getElementById('note-in').value.trim();if(!t)return;
+  patterns[activeIdx].sessions.unshift({text:t,date:new Date().toLocaleString()});
+  document.getElementById('note-in').value='';
+  saveState();renderNotes(patterns[activeIdx]);
+}
+function renderNotes(p){
+  const el=document.getElementById('notes-out');el.innerHTML='';
+  if(!p.sessions?.length){el.innerHTML='<div style="font-size:0.78rem;color:var(--muted);">No notes yet.</div>';return;}
+  p.sessions.forEach(n=>{
+    const d=document.createElement('div');d.className='note-card';
+    d.innerHTML=`<div class="note-date">${n.date}</div><div style="font-size:0.8rem;margin-top:2px;">${n.text}</div>`;
+    el.appendChild(d);
+  });
+}
+
+// ── DMC TABLE ──
+function renderDMCTable(list){
+  const tb=document.getElementById('dmc-tbody');tb.innerHTML='';
+  list.forEach(d=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><span class="dsw" style="background:${d.hex};"></span></td>
+      <td><b>${d.code}</b></td><td>${d.name}</td>
+      <td style="text-align:center;font-size:1rem;">${d.symbol}</td>
+      <td><span class="badge badge-r" style="font-size:0.6rem;">${d.family}</span></td>
+      <td><button class="addb" onclick="useDMC('${d.code}')">+ Use</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+function filterDMC(){
+  const q=document.getElementById('dmc-q').value.toLowerCase();
+  const fam=document.getElementById('dmc-fam').value;
+  const filtered=DMC_DB.filter(d=>{
+    const mq=!q||d.code.toLowerCase().includes(q)||d.name.toLowerCase().includes(q);
+    const mf=!fam||d.family===fam;
+    return mq&&mf;
+  });
+  renderDMCTable(filtered);
+}
+function useDMC(code){
+  const dmc=DMC_DB.find(d=>d.code===code);if(!dmc||activeIdx==null)return;
+  const p=patterns[activeIdx];
+  if(!p.palette.find(pp=>pp.code===code)){
+    p.palette.push({color:dmc.hex,code:dmc.code,label:dmc.name,symbol:SYMS[p.palette.length%SYMS.length]});
+    saveState();
+  }
+  activeColor=dmc.hex;
+  document.getElementById('active-color-sel').value=dmc.hex;
+  goTab('tracker');
+}
+
+// ── CLOSE MODALS ON BG CLICK ──
+document.querySelectorAll('.moval').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open');});});
+
+// ── BOOT ──
+loadState();
+renderPatList();
+renderDMCTable(DMC_DB);
+document.getElementById('dmc-count').textContent=`(${DMC_DB.length} colors)`;
+if(activeIdx!=null){renderTracker();}
+</script>
+</body>
+</html>
