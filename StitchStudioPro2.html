@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#c4686d">
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -1409,5 +1411,10 @@ renderDMCTable(DMC_DB);
 document.getElementById('dmc-count').textContent=`(${DMC_DB.length} colors)`;
 if(activeIdx!=null){renderTracker();}
 </script>
+  <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+  </script>
 </body>
 </html>
